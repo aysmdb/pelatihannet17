@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using apajaadastore.Models;
 using apajaadastore.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,13 @@ namespace apajaadastore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApaAjaContext>(p => p.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => {
+                    options.LoginPath = "/account/login";
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                });
+
             services.AddControllersWithViews();
 
             services.AddTransient<ProductServices, ProductServices>();
@@ -45,6 +53,9 @@ namespace apajaadastore
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseAuthorization();
 

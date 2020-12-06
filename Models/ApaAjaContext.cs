@@ -14,5 +14,6 @@ namespace apajaadastore.Models
         }
 
         public DbSet<Product> Product { get; set; }
+        public DbSet<Users> Users { get; set; }
     }
 }
